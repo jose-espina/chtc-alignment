@@ -1,0 +1,39 @@
+# pe-align_multi.sub 
+# HTCondor submit file with docker container for performing
+# bowtie2 alignment on paired-end reads
+# Run: condor_submit pe-align_multi.sub
+
+# Line added to ensure node has access to staging
+Requirements = (Target.hasCHTCStaging == true)
+
+# Provide HTCondor with the name of the Docker container
+container_image = docker://jespina/chtc-alignment:dev
+universe = container
+
+# Specify executable and arguments
+# $(fastq1) and $(fastq2) are paired-end read files queued from a samplesheet.txt file
+# NOTE - queueing over list does not seem to work if variable contains special character
+executable = pe-align.sh
+arguments = $(samplename) $(fastq1) $(fastq2)
+   		
+# specify name of the log, standard error, and standard output files 
+# $(Cluster) represents queue number assigned to this set of jobs at the time of submission
+# $(Process) is integer number for each job starting from "0"
+log = $(samplename)_align_$(Cluster)_$(Process).log
+error = $(samplename)_align_$(Cluster)_$(Process).err
+output = $(samplename)_align_$(Cluster)_$(Process).out
+   
+# transfer files in/out of /home/{net-id}/
+# transfer output files on exit from compute node
+should_transfer_files = YES
+transfer_input_files = 
+when_to_transfer_output = ON_EXIT
+   
+# memory, disk, and cpu requirements
+request_cpus = 8
+request_memory = 32GB
+request_disk = 25GB
+   
+# Tell HTCondor to queue over a samplesheet.txt file
+queue samplename,fastq1,fastq2 from samplesheet.txt
+###END
