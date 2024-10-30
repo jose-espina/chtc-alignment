@@ -31,8 +31,8 @@ when_to_transfer_output = ON_EXIT
    
 # memory, disk, and cpu requirements
 request_cpus = 8
-request_memory = 32GB
-request_disk = 25GB
+request_memory = 40GB
+request_disk = 50GB
    
 # Tell HTCondor to queue over a samplesheet.txt file
 queue samplename,fastq1,fastq2 from samplesheet.txt
