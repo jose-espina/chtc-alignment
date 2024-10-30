@@ -33,7 +33,7 @@ echo "Aligning " $samplename " (paired-end)"
 
 # run bowtie2
 bowtie2 --end-to-end --very-sensitive --no-mixed --no-discordant -I 10 -X 700 -p 8 -x index/mm10 \
--1 input/$fastq1 -2 input/$fastq2 -S output/${samplename}_bowtie2.sam 
+-1 input/$fastq1 -2 input/$fastq2 -S output/${samplename}_bowtie2.sam &> ${samplename}_bowtie2.txt 
 
 # tar output and move to staging
 tar -czvf ${samplename}_bowtie2.tar.gz output/
