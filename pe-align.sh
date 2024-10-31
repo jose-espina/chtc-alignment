@@ -2,21 +2,29 @@
 #
 # pe-align.sh
 # CHTC alignment using bowtie2 to mm10
-# Usage: pe-align.sh <samplename> <R1-fastq> <R2-fastq>
+# Usage: pe-align.sh <samplename> <R1 and R2 tar>
 
 # mkdir
 export HOME=$PWD
 mkdir -p input output index
 
 # assign samplename to $1
-# assign fastq1 to $2 and fastq2 to $3
+# assign reads to $2
 samplename=$1
-fastq1=$2
-fastq2=$3
+reads=$2
 
-# copy reads1 and reads2 from staging to input directory
-cp /staging/groups/roopra_group/jespina/$fastq1 input
-cp /staging/groups/roopra_group/jespina/$fastq2 input
+# copy trimmed_fq.tar.gz from staging to input directory and unpack
+cp /staging/groups/roopra_group/jespina/$reads input
+cd input
+tar -xzvf $reads
+
+# assign fastq1 and fastq2 to R1 and R2 reads
+fastq1=$(ls *R1_001_trimmed.fq.gz)
+fastq2=$(ls *R2_001_trimmed.fq.gz)
+
+# remove tar containing the reads
+rm $reads
+cd ~
 
 # copy index tar to index directory
 cp /staging/groups/roopra_group/jespina/index/mm10.tar.gz index
@@ -31,13 +39,14 @@ cd ~
 echo $fastq1 " and " $fastq2
 echo "Aligning " $samplename " (paired-end)"
 
-# run bowtie2
+# run bowtie2 alignment
 bowtie2 --end-to-end --very-sensitive --no-mixed --no-discordant -I 10 -X 700 -p 8 -x index/mm10 \
 -1 input/$fastq1 -2 input/$fastq2 -S output/${samplename}_bowtie2.sam &> ${samplename}_bowtie2.txt 
 
-# samtools sort
-
-
+# convert .sam to .bam using samtools
+samtools view -h -S -b \
+-o output/${samplename}_bowtie2.bam \
+output/${samplename}_bowtie.sam
 
 # tar output and move to staging
 tar -czvf ${samplename}_bowtie2.tar.gz output/
