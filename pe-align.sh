@@ -46,11 +46,21 @@ bowtie2 --end-to-end --very-sensitive --no-mixed --no-discordant -I 10 -X 700 -p
 # convert .sam to .bam using samtools
 samtools view -h -S -b \
 -o output/${samplename}_bowtie2.bam \
-output/${samplename}_bowtie.sam
+output/${samplename}_bowtie2.sam
 
-# tar output and move to staging
-tar -czvf ${samplename}_bowtie2.tar.gz output/
-mv ${samplename}_bowtie2.tar.gz /staging/groups/roopra_group/jespina
+# sort and index bam file
+samtools sort output/${samplename}_bowtie2.bam -o output/${samplename}_bowtie2_sorted.bam
+cd output
+samtools index -b ${samplename}_bowtie2_sorted.bam
+
+# tar sam and move to staging
+tar -czvf ${samplename}_bowtie2.sam.tar.gz ${samplename}_bowtie2.sam
+mv ${samplename}_bowtie2.sam.tar.gz /staging/groups/roopra_group/jespina
+
+# move sorted bam and index to staging for next step 
+mv ${samplename}_bowtie2_sorted.bam /staging/groups/roopra_group/jespina
+mv ${samplename}_bowtie2_sorted.bam.bai /staging/groups/roopra_group/jespina
+cd ~
 
 # before script exits, remove files from working directory
 rm -r input output index
