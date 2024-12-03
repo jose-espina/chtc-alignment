@@ -1,0 +1,40 @@
+# fragmentlength.sub 
+# HTCondor submit file with docker container for performing
+# collecting fragment lengths for QC
+# Run: condor_submit fragmentlength.sub
+
+# Line added to ensure node has access to staging
+Requirements = (Target.hasCHTCStaging == true)
+
+# Provide HTCondor with the name of the Docker container
+container_image = docker://jespina/chtc-alignment:1.1
+universe = container
+
+# Specify executable and arguments
+# $bam is the bam alignment file
+# NOTE - queueing over list does not seem to work if variable contains special character
+executable = fragmentlength.sh
+arguments = $(bam)
+   		
+# specify name of the log, standard error, and standard output files 
+# $(Cluster) represents queue number assigned to this set of jobs at the time of submission
+# $(Process) is integer number for each job starting from "0"
+log = $(bam)_fragmentLength_$(Cluster)_$(Process).log
+error = $(bam)_fragmentLength_$(Cluster)_$(Process).err
+output = $(bam)_fragmentLength_$(Cluster)_$(Process).out
+   
+# transfer files in/out of /home/{net-id}/
+# transfer output files on exit from compute node
+should_transfer_files = YES
+transfer_input_files = 
+when_to_transfer_output = ON_EXIT
+   
+# memory, disk, and cpu requirements
+request_cpus = 4
+request_memory = 16GB
+request_disk = 15GB
+   
+# Tell HTCondor to queue over a samplesheet_align.txt file
+queue bam from samplesheet_bam.txt
+
+###END
