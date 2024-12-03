@@ -7,7 +7,7 @@
 Requirements = (Target.hasCHTCStaging == true)
 
 # Provide HTCondor with the name of the Docker container
-container_image = docker://jespina/chtc-alignment:1.1
+container_image = file:///staging/jespina/chtc-alignment.sif 
 universe = container
 
 # Specify executable and arguments
@@ -35,7 +35,7 @@ request_cpus = 8
 request_memory = 40GB
 request_disk = 50GB
    
-# Tell HTCondor to queue over a samplesheet.txt file
-queue samplename,reads from samplesheet.txt
+# Tell HTCondor to queue over a samplesheet_align.txt file
+queue samplename,reads from samplesheet_align.txt
 
 ###END
