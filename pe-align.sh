@@ -14,7 +14,7 @@ samplename=$1
 reads=$2
 
 # copy trimmed_fq.tar.gz from staging to input directory and unpack
-cp /staging/groups/roopra_group/jespina/$reads input
+cp /staging/jespina/$reads input
 cd input
 tar -xzvf $reads
 
@@ -27,7 +27,7 @@ rm $reads
 cd ~
 
 # copy index tar to index directory
-cp /staging/groups/roopra_group/jespina/index/mm10.tar.gz index
+cp /staging/jespina/index/mm10.tar.gz index
 
 # unpack index tar
 cd index
@@ -55,11 +55,11 @@ samtools index -b ${samplename}_bowtie2_sorted.bam
 
 # tar sam and move to staging
 tar -czvf ${samplename}_bowtie2.sam.tar.gz ${samplename}_bowtie2.sam
-mv ${samplename}_bowtie2.sam.tar.gz /staging/groups/roopra_group/jespina
+mv ${samplename}_bowtie2.sam.tar.gz /staging/jespina
 
 # move sorted bam and index to staging for next step 
-mv ${samplename}_bowtie2_sorted.bam /staging/groups/roopra_group/jespina
-mv ${samplename}_bowtie2_sorted.bam.bai /staging/groups/roopra_group/jespina
+mv ${samplename}_bowtie2_sorted.bam /staging/jespina
+mv ${samplename}_bowtie2_sorted.bam.bai /staging/jespina
 cd ~
 
 # before script exits, remove files from working directory
