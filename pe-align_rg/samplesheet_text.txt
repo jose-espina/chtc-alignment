@@ -1,0 +1,2 @@
+LIB-240930-nuc-K27m3_S591, LIB240930-nuc-K27m3_S591_trimmed_fq.tar.gz, 
+samplename, reads, rgid, rglb, rgpu, rgsm
