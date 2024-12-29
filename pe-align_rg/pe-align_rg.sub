@@ -7,7 +7,7 @@
 Requirements = (Target.hasCHTCStaging == true)
 
 # Provide HTCondor with the name of the Docker container
-container_image = docker://jespina/chtc-alignment:1.1
+container_image = file:///staging/jespina/containers/chtc-alignment.sif
 universe = container
 
 # Specify executable and arguments
